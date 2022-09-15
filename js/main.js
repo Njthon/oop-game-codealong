@@ -2,25 +2,39 @@
 class Game {
   constructor(){
       this.player = null; //will store an instance of the class Player
-      this.obstacles = [];
+      this.obstacles = []; //will store instances of the class Obstacle
   }
-
   start(){
-    this.player = new Player();
-    this.attachEventListeners();
-    
-    //moving obstacle
-    setInterval(() => {
-       this.obstacles.forEach((obstacleInstance) => {
-            obstacleInstance.moveDown();
-       });
-    }, 200);
-    
-    setInterval(() => {
-        //create new obstacle
-        const newObstacle = new Obstacle();
-        this.obstacles.push(newObstacle);
-    }, 3000);
+      this.player = new Player();
+      this.attachEventListeners();
+      
+      //create new obstacles
+      setInterval(() => {
+          const newObstacle = new Obstacle();
+          this.obstacles.push(newObstacle);
+      }, 3000);
+
+      //move obstacles
+      setInterval(() => {
+          this.obstacles.forEach( (obstacleInstance) => {
+
+              //move
+              obstacleInstance.moveDown();
+
+              //detect collision
+              if (
+                  this.player.positionX < obstacleInstance.positionX + obstacleInstance.width &&
+                  this.player.positionX + this.player.width > obstacleInstance.positionX &&
+                  this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
+                  this.player.height + this.player.positionY > obstacleInstance.positionY
+              ) {
+                  console.log("game over my friend....")
+              }
+
+          });
+      }, 60);
+
+
   }
   attachEventListeners(){
       document.addEventListener("keydown", (event) => {
